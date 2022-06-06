@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <title>Список аксессуаров</title>
+</head>
+<div class="container">
+<h2 class="pt-5 pb-5 text-center">Список аксессуаров</h2>
+<div class="btn-container flex items-center pb-5">
+    <button type="button" class="btn btn-primary" onClick="GetAccs()">Обновить</button>
+</div>
+<table class="table table-condensed table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th>Цена</th>
+        <th>Количество на складе</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+</div>
+<h1>Тест</h1>
+<form name="qq">
+    <label>Название</label>
+    <input type="text" name="name" /><br/>
+    <button type="submit" class="btn btn-primary" id="sumbit">Добавить</button>
+</form>
+<h1>Клиент</h1>
+<form name="insertForm">
+    <label>Фамилия</label><br>
+    <input type="text" name="clientLastName"/><br><br>
+    <label>Имя</label><br>
+    <input type="text" name="clientFirstName"/><br><br>
+    <label>Отчество</label><br>
+    <input type="text" name="clientMiddleName"/><br><br>
+    <label>Название компании</label><br>
+    <input type="text" name="companyName"/><br><br>
+    <label>Телефон</label><br>
+    <input type="text" name="clientPhone"/><br><br>
+    <label>Адрес</label><br>
+    <input type="text" name="clientAddress"/><br><br>
+    <button type="submit" id="insert">Добавить</button>
+</form>
+<script>
+    document.getElementById("insert").addEventListener("click", async function (e) {
+        e.preventDefault();
+        let form = document.forms["insertForm"];
+        let clientLastName = form.clientLastName.value;
+        let clientFirstName = form.clientFirstName.value;
+        let clientMiddleName = form.clientMiddleName.value;
+        let companyName = form.companyName.value;
+        let clientPhone = form.clientPhone.value;
+        let clientAddress = form.clientAddress.value;
+        let accs = {
+            last_name: clientLastName,
+            first_name: clientFirstName,
+            middle_name: clientMiddleName,
+            company_name: companyName,
+            phone: clientPhone,
+            address: clientAddress
+        }
+
+        let response = await fetch('/api/addAccs', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(accs)
+        });
+
+        alert("Готово!");
+    });
+</script>
+<script>
+    document.getElementById("sumbit").addEventListener("click", async function (e) {
+        e.preventDefault();
+        let form = document.forms["qq"];
+        let name = form.name.value;
+        let accs = {
+            test_name: name,
+        }
+
+        let response = await fetch('/api/addAccs', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(accs)
+        });
+
+        alert("Готово!");
+    });
+</script>
+<script>
+    async function GetAccs() {
+        const response = await fetch("/api/getAllAccs", {
+            method: "GET",
+            headers: { "Accept": "application/json" }
+        });
+        console.log(response);
+        if (response.ok === true) {
+            const users = await response.json();
+            let rows = document.querySelector("tbody");
+            users.forEach(accessories => {rows.append(row(accessories));});
+        }
+    }
+
+    function row(accessories) {
+        const tr = document.createElement("tr");
+        tr.setAttribute("data-rowid", accessories.id_accessories);
+
+        const idTd = document.createElement("td");
+        idTd.append(accessories.id_accessories);
+        tr.append(idTd);
+
+        const nameTd = document.createElement("td");
+        nameTd.append(accessories.description_accessories);
+        tr.append(nameTd);
+
+        const cityTd = document.createElement("td");
+        cityTd.append(accessories.price_accessories);
+        tr.append(cityTd);
+
+        
+        const amount = document.createElement("td");
+        amount.append(accessories.quantity_accessories);
+        tr.append(amount);
+
+        return tr;
+    }
+    GetAccs();
+</script>
+</body>
+</html>

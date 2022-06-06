@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <title>Список аксессуаров</title>
+</head>
+<h2>Список аксессуаров</h2>
+<table class="table table-condensed table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>Название</th>
+        <th>Цена</th>
+        <th>Количество на складе</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<script>
+    async function GetAccs() {
+        const response = await fetch("/api/getAllAccs", {
+            method: "GET",
+            headers: { "Accept": "application/json" }
+        });
+        console.log(response);
+        if (response.ok === true) {
+            const users = await response.json();
+            let rows = document.querySelector("tbody");
+            users.forEach(accessories => {rows.append(row(accessories));});
+        }
+    }
+    function row(accessories) {
+
+        const tr = document.createElement("tr");
+        tr.setAttribute("data-rowid", accessories.id_accessories);
+
+        const idTd = document.createElement("td");
+        idTd.append(accessories.id_accessories);
+        tr.append(idTd);
+
+        const nameTd = document.createElement("td");
+        nameTd.append(accessories.description_accessories);
+        tr.append(nameTd);
+
+        const cityTd = document.createElement("td");
+        cityTd.append(accessories.price_accessories);
+        tr.append(cityTd);
+
+        const dateogbirthTd = document.createElement("td");
+        dateogbirthTd.append(accessories.quntity_accessories);
+        tr.append(dateogbirthTd);
+
+        return tr;
+    }
+    GetAccs();
+</script>
+</body>
+</html>
