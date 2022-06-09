@@ -3,33 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
-    <title>Список аксессуаров</title>
+    <title>Клиенты</title>
 </head>
 <div class="container">
-<h2 class="pt-5 pb-5 text-center">Список аксессуаров</h2>
-<div class="btn-container flex items-center pb-5">
-    <button type="button" class="btn btn-primary" onClick="GetAccs()">Обновить</button>
+    <h2 class="pt-5 pb-5 text-center">Список клиентов</h2>
+    <div class="btn-container flex items-center pb-5">
+        <button type="button" class="btn btn-primary" onClick="GetClients()">Обновить</button>
+    </div>
+    <table class="table table-condensed table-striped table-bordered" id="table111">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Фамилия</th>
+            <th>Имя</th>
+            <th>Отчество</th>
+            <th>Название компании</th>
+            <th>Телефон</th>
+            <th>Адрес</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 </div>
-<table class="table table-condensed table-striped table-bordered">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Название</th>
-        <th>Цена</th>
-        <th>Количество на складе</th>
-    </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-</div>
-<h1>Тест</h1>
-<form name="qq">
-    <label>Название</label>
-    <input type="text" name="name" /><br/>
-    <button type="submit" class="btn btn-primary" id="sumbit">Добавить</button>
-</form>
 <h1>Клиент</h1>
 <form name="insertForm">
     <label>Фамилия</label><br>
@@ -44,7 +40,7 @@
     <input type="text" name="clientPhone"/><br><br>
     <label>Адрес</label><br>
     <input type="text" name="clientAddress"/><br><br>
-    <button type="submit" id="insert">Добавить</button>
+    <button type="submit" id="insert" onclick="GetClients()">Добавить</button>
 </form>
 <script>
     document.getElementById("insert").addEventListener("click", async function (e) {
@@ -65,7 +61,7 @@
             address: clientAddress
         }
 
-        let response = await fetch('/api/addAccs', {
+        let response = await fetch('/api/createClient', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -77,63 +73,61 @@
     });
 </script>
 <script>
-    document.getElementById("sumbit").addEventListener("click", async function (e) {
-        e.preventDefault();
-        let form = document.forms["qq"];
-        let name = form.name.value;
-        let accs = {
-            test_name: name,
-        }
-
-        let response = await fetch('/api/addAccs', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify(accs)
-        });
-
-        alert("Готово!");
-    });
-</script>
-<script>
-    async function GetAccs() {
-        const response = await fetch("/api/getAllAccs", {
+    async function GetClients() {
+        const response = await fetch("/api/getAllClients", {
             method: "GET",
-            headers: { "Accept": "application/json" }
+            headers: {"Accept": "application/json"}
         });
         console.log(response);
         if (response.ok === true) {
             const users = await response.json();
             let rows = document.querySelector("tbody");
-            users.forEach(accessories => {rows.append(row(accessories));});
+            for (var i = document.getElementById('table111').getElementsByTagName('tr').length - 1; i; i--) {
+                document.getElementById('table111').deleteRow(i);
+            }
+
+            users.forEach(clients => {
+                rows.append(row(clients));
+            });
         }
     }
 
-    function row(accessories) {
+    function row(clients) {
         const tr = document.createElement("tr");
-        tr.setAttribute("data-rowid", accessories.id_accessories);
+        tr.setAttribute("data-rowid", clients.client_id);
 
-        const idTd = document.createElement("td");
-        idTd.append(accessories.id_accessories);
-        tr.append(idTd);
+        const cid = document.createElement("td");
+        cid.append(clients.client_id);
+        tr.append(cid);
 
-        const nameTd = document.createElement("td");
-        nameTd.append(accessories.description_accessories);
-        tr.append(nameTd);
+        const lastName = document.createElement("td");
+        lastName.append(clients.last_name);
+        tr.append(lastName);
 
-        const cityTd = document.createElement("td");
-        cityTd.append(accessories.price_accessories);
-        tr.append(cityTd);
+        const firstName = document.createElement("td");
+        firstName.append(clients.first_name);
+        tr.append(firstName);
 
-        
-        const amount = document.createElement("td");
-        amount.append(accessories.quantity_accessories);
-        tr.append(amount);
+        const middleName = document.createElement("td");
+        middleName.append(clients.middle_name);
+        tr.append(middleName);
+
+        const compName = document.createElement("td");
+        compName.append(clients.company_name);
+        tr.append(compName);
+
+        const phone = document.createElement("td");
+        phone.append(clients.phone);
+        tr.append(phone);
+
+        const address = document.createElement("td");
+        address.append(clients.address);
+        tr.append(address);
 
         return tr;
     }
-    GetAccs();
+
+    GetClients();
 </script>
 </body>
 </html>
